@@ -1,22 +1,22 @@
-import { Router } from "express";
-import { userController } from "../controllers/UserController.ts";
+import { Router } from 'express'
+import { userController } from '../controllers/UserController.ts'
 
-const router = Router();
+const router: Router = Router()
 
-router.get("/", (req, res) => {
-    userController.findAll(req, res);
-});
-router.get("/:id", (req, res) => {
-    userController.findOne(req, res);
-});
-router.post("/", (req, res) => {
-    userController.create(req, res);
-});
-router.put("/:id", (req, res) => {
-    userController.update(req, res);
-});
-router.delete("/:id", (req, res) => {
-    userController.delete(req, res);
-});
+router.get('/', (req, res) => {
+  userController.findAll(req, res)
+})
+router.get('/:id', (req, res) => {
+  userController.findOne(req, res)
+})
+router.post('/', (req, res) => {
+  userController.create(req, res)
+})
+router.put('/:id', (req, res) => {
+  userController.update(req, res)
+})
+router.delete('/:id', (req, res) => {
+  userController.delete(req, res)
+})
 
-export default router;
+export default router

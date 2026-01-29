@@ -1,113 +1,108 @@
-// GET /users
-
-import type { User } from "../entities/User.ts";
-import { userService } from "../services/UserService.ts";
-import type { Request, Response } from "express";
+import { userService } from '../services/UserService.ts'
+import type { Request, Response } from 'express'
 
 class UserController {
-    async findAll(req: Request, res: Response) {
-        try {
-            const users = await userService.findAll();
-            res.status(200).json(users);
-        } catch (error) {
-            res.status(500).json({ message: "Błąd serwera" });
-        }
+  async findAll(req: Request, res: Response) {
+    try {
+      const users = await userService.findAll()
+      res.status(200).json(users)
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
     }
+  }
 
-    async findOne(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
+  async findOne(req: Request, res: Response) {
+    try {
+      const { id } = req.params
 
-            if (isNaN(Number(id))) {
-                return res.status(400).json({ message: "Nieprawidłowy format id" });
-            }
+      if (isNaN(Number(id))) {
+        return res.status(400).json({ message: 'Nieprawidłowy format id' })
+      }
 
-            const user = await userService.findOne(Number(id));
+      const user = await userService.findOne(Number(id))
 
-            if (!user) {
-                return res.status(404).json({ message: "Użytkownik nie istnieje" });
-            }
+      if (!user) {
+        return res.status(404).json({ message: 'Użytkownik nie istnieje' })
+      }
 
-            res.status(200).json(user);
-        } catch (error) {
-            res.status(500).json({ message: "Błąd serwera" });
-        }
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
     }
+  }
 
-    async create(req: Request, res: Response) {
-        try {
-            const { firstName, lastName, email } = req.body;
-            
-            if (!firstName || !lastName || !email) {
-                return res.status(400).json({ message: "Imię, nazwisko i email są wymagane" });
-            }
+  async create(req: Request, res: Response) {
+    try {
+      const { firstName, lastName, email } = req.body
 
-            if (!email.includes("@")) {
-                return res.status(400).json({ message: "Email musi być poprawny" });
-            }
+      if (!firstName || !lastName || !email) {
+        return res.status(400).json({ message: 'Imię, nazwisko i email są wymagane' })
+      }
 
-            const existingUser = await userService.findByEmail(email);
+      if (!email.includes('@')) {
+        return res.status(400).json({ message: 'Email musi być poprawny' })
+      }
 
-            if (existingUser) {
-                return res.status(409).json({ message: "Email już istnieje" });
-            }
+      const existingUser = await userService.findByEmail(email)
 
-            const user = await userService.create({ firstName, lastName, email });
-            res.status(201).json(user);
-            
-        } catch (error) {
-            res.status(500).json({ message: "Błąd serwera" });
-        }
+      if (existingUser) {
+        return res.status(409).json({ message: 'Email już istnieje' })
+      }
+
+      const user = await userService.create({ firstName, lastName, email })
+      res.status(201).json(user)
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
     }
+  }
 
-    async update(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
-            const { firstName, lastName, email } = req.body;
+  async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const { firstName, lastName, email } = req.body
 
-            if (isNaN(Number(id))) {
-                return res.status(400).json({ message: "Nieprawidłowy format id" });
-            }
+      if (isNaN(Number(id))) {
+        return res.status(400).json({ message: 'Nieprawidłowy format id' })
+      }
 
-            if (!firstName || !lastName || !email) {
-                return res.status(400).json({ message: "Imię, nazwisko i email są wymagane" });
-            }
+      if (!firstName || !lastName || !email) {
+        return res.status(400).json({ message: 'Imię, nazwisko i email są wymagane' })
+      }
 
-            if (!email.includes("@")) {
-                return res.status(400).json({ message: "Email musi być poprawny" });
-            }
+      if (!email.includes('@')) {
+        return res.status(400).json({ message: 'Email musi być poprawny' })
+      }
 
-            const user = await userService.update(Number(id), { firstName, lastName, email });
+      const user = await userService.update(Number(id), { firstName, lastName, email })
 
-            if (!user) {
-                return res.status(404).json({ message: "Użytkownik nie istnieje" });
-            }
-            res.status(200).json(user);
-            
-        } catch (error) {
-            res.status(500).json({ message: "Błąd serwera" });
-        }
+      if (!user) {
+        return res.status(404).json({ message: 'Użytkownik nie istnieje' })
+      }
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
     }
+  }
 
-    async delete(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
+  async delete(req: Request, res: Response) {
+    try {
+      const { id } = req.params
 
-            if (isNaN(Number(id))) {
-                return res.status(400).json({ message: "Nieprawidłowy format id" });
-            }
+      if (isNaN(Number(id))) {
+        return res.status(400).json({ message: 'Nieprawidłowy format id' })
+      }
 
-            const user = await userService.delete(Number(id));
+      const user = await userService.delete(Number(id))
 
-            if (!user) {
-                return res.status(404).json({ message: "Użytkownik nie istnieje" });
-            }
+      if (!user) {
+        return res.status(404).json({ message: 'Użytkownik nie istnieje' })
+      }
 
-            res.status(200).json({ message: "Użytkownik usunięty" });
-        } catch (error) {
-            res.status(500).json({ message: "Błąd serwera" });
-        }
+      res.status(200).json({ message: 'Użytkownik usunięty' })
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
     }
+  }
 }
 
-export const userController = new UserController();
+export const userController = new UserController()
