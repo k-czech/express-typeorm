@@ -7,4 +7,8 @@ router.post('/', (req, res) => {
   postController.create(req, res)
 })
 
+router.get('/', (req, res) => {
+  postController.findByCategory(req, res)
+})
+
 export default router

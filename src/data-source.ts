@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm'
 import { User } from './entities/User.ts'
 import { Post } from './entities/Post.ts'
+import { Tag } from './entities/Tag.ts'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,5 +12,5 @@ export const AppDataSource = new DataSource({
   database: 'postgres',
   synchronize: true,
   logging: true,
-  entities: [User, Post]
+  entities: [User, Post, Tag]
 })

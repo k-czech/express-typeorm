@@ -4,9 +4,12 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable
 } from 'typeorm'
 import { User } from './User.ts'
+import { Tag } from './Tag.ts'
 
 @Entity()
 export class Post {
@@ -22,8 +25,14 @@ export class Post {
   @Column({ type: 'varchar' })
   category!: string
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   user!: User
+
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    cascade: true
+  })
+  @JoinTable()
+  tags!: Tag[]
 
   @CreateDateColumn()
   createdAt!: Date

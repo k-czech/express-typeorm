@@ -10,7 +10,7 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<User | null> {
-    return this.userRepository.findOneBy({ id })
+    return this.userRepository.findOne({ where: { id }, relations: ['posts'] })
   }
 
   async findAll(): Promise<User[]> {
@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ email })
+    return this.userRepository.findOne({ where: { email } })
   }
 
   async update(id: number, user: UserDTO): Promise<UserDTO | null> {
