@@ -44,6 +44,25 @@ class PostController {
       res.status(500).json({ message: 'Błąd serwera' })
     }
   }
+
+  async updatePostTags(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const { tagNames } = req.body
+
+      if (isNaN(Number(id)) || !tagNames) {
+        return res.status(400).json({ message: 'Wszystkie pola są wymagane' })
+      }
+
+      const post = await postService.updatePostTags(Number(id), tagNames)
+      res.status(200).json(post)
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Post nie został znaleziony') {
+        return res.status(404).json({ message: error.message })
+      }
+      res.status(500).json({ message: 'Błąd serwera' })
+    }
+  }
 }
 
 export default new PostController()

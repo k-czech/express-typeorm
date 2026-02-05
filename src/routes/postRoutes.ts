@@ -11,4 +11,8 @@ router.get('/', (req, res) => {
   postController.findByCategory(req, res)
 })
 
+router.patch('/:id/tags', (req, res) => {
+  postController.updatePostTags(req, res)
+})
+
 export default router

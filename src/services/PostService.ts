@@ -25,6 +25,18 @@ export class PostService {
   async findAll(): Promise<Post[]> {
     return this.postRepository.find({ relations: ['user', 'tags'] })
   }
+
+  async updatePostTags(postId: number, tagNames: string[]): Promise<Post> {
+    const post = await this.postRepository.findOne({ where: { id: postId }, relations: ['tags'] })
+    if (!post) throw new Error('Post nie został znaleziony')
+
+    const newTags = await tagService.getOrCreateTags(tagNames)
+    const allTags = [...post.tags, ...newTags]
+    post.tags = allTags.filter(
+      (tag, index, self) => index === self.findIndex((t) => t.id === tag.id)
+    )
+    return await this.postRepository.save(post)
+  }
 }
 
 export const postService = new PostService()
