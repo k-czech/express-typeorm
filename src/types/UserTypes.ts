@@ -1,3 +1,3 @@
 import type { User } from '../entities/User.ts'
 
-export type UserDTO = Pick<User, 'firstName' | 'lastName' | 'email'>
+export type UserDTO = Pick<User, 'firstName' | 'lastName' | 'email' | 'password'>

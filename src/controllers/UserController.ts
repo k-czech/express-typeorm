@@ -1,5 +1,6 @@
 import { userService } from '../services/UserService.ts'
 import type { Request, Response } from 'express'
+import { validatePassword } from '../utils/validatePassword.ts'
 
 class UserController {
   async findAll(req: Request, res: Response) {
@@ -33,23 +34,26 @@ class UserController {
 
   async create(req: Request, res: Response) {
     try {
-      const { firstName, lastName, email } = req.body
+      const { firstName, lastName, email, password } = req.body
+      console.log('Otrzymane hasło:', `"${password}"`) // Cudzysłów pomoże nam dostrzec spacje
+      console.log('Długość hasła:', password.length)
 
-      if (!firstName || !lastName || !email) {
-        return res.status(400).json({ message: 'Imię, nazwisko i email są wymagane' })
+      if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({ message: 'Imię, nazwisko, email i hasło są wymagane' })
+      }
+
+      if (!validatePassword(password)) {
+        return res.status(400).json({
+          message:
+            'Hasło musi mieć co najmniej 8 znaków, jedną dużą literę, jedną małą literę, jedną cyfrę i jeden specjalny znak'
+        })
       }
 
       if (!email.includes('@')) {
         return res.status(400).json({ message: 'Email musi być poprawny' })
       }
 
-      const existingUser = await userService.findByEmail(email)
-
-      if (existingUser) {
-        return res.status(409).json({ message: 'Email już istnieje' })
-      }
-
-      const user = await userService.create({ firstName, lastName, email })
+      const user = await userService.create({ firstName, lastName, email, password })
       res.status(201).json(user)
     } catch (error) {
       res.status(500).json({ message: 'Błąd serwera' })
