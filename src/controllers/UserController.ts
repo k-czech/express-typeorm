@@ -3,6 +3,21 @@ import type { Request, Response } from 'express'
 import { validatePassword } from '../utils/validatePassword.ts'
 
 class UserController {
+  async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body
+      const result = await userService.login(email, password)
+
+      if (!result) {
+        return res.status(401).json({ message: 'Błędne dane logowania' })
+      }
+
+      res.status(200).json(result)
+    } catch (error) {
+      res.status(500).json({ message: 'Błąd serwera' })
+    }
+  }
+
   async findAll(req: Request, res: Response) {
     try {
       const users = await userService.findAll()

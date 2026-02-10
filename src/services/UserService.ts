@@ -2,9 +2,29 @@ import { AppDataSource } from '../data-source.ts'
 import { User } from '../entities/User.ts'
 import type { UserDTO } from '../types/UserTypes.ts'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export class UserService {
   private userRepository = AppDataSource.getRepository(User)
+
+  async login(email: string, password: string): Promise<{ token: string; userId: number }> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password')
+      .getOne()
+
+    if (!user) throw new Error('Błędne dane logowania')
+
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) throw new Error('Nieprawidłowe hasło')
+
+    const token = jwt.sign({ userId: user.id, email: user.email }, 'YOUR_SECRET_KEY', {
+      expiresIn: '1h'
+    })
+
+    return { token, userId: user.id }
+  }
 
   async create(user: UserDTO): Promise<User> {
     const { password, email, ...rest } = user
